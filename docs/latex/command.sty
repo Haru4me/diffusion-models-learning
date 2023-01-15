@@ -1,0 +1,113 @@
+% Command for russian letters in formula, use as \texti{текст на русском}
+
+
+\newcommand{\texti}[1]{
+  \text{\textit{\textsf{#1}}}
+}
+
+% Command for double displaystyle frac
+\newcommand{\ddfrac}[2]{
+  \frac{\displaystyle #1}{\displaystyle #2}
+}
+
+% Shortcat for complex numbers
+\newcommand{\compl}{
+  \mathbb{C}
+}
+
+% Shortcat for real numbers
+\newcommand{\real}{
+  \mathbb{R}
+}
+
+% Shortcat for natural numbers
+\newcommand{\nat}{
+  \mathbb{N}
+}
+
+% Shortcat for whole numbers
+\newcommand{\whole}{
+  \mathbb{Z}
+}
+
+% Shortcat for delta triangle symbol
+\newcommand{\inc}{
+  \Delta
+}
+
+% Shortcat for underline
+\newcommand{\ul}{
+  \underline
+}
+
+% Shortcat for epsilon
+\newcommand{\eps}{
+  \varepsilon
+}
+
+% Make rot look as min|max|etc
+\newcommand{\rot}{
+  \texti{rot}
+}
+
+% Make grad look as min|max|etc
+\newcommand{\grad}{
+  \texti{grad}
+}
+
+% Equal sign with 'def' above
+\newcommand{\eq}{
+  \stackrel{def}{=}
+}
+
+% Delete empty space before and after formulas
+\newcommand{\formulaswithoutspacing}{
+  \abovedisplayskip = 0pt
+  \belowdisplayskip = 0pt
+  \abovedisplayshortskip = 0pt
+  \belowdisplayshortskip = 0pt
+}
+
+% Better kappa (greek letter) look
+\newcommand{\vkappa}{
+  \texti{\ae}
+}
+
+% Define shortcut for norm
+\newcommand{\norm}[1]{
+  \left\Vert #1 \right\Vert
+}
+
+% Define shortcut for square brackets
+\newcommand{\sqb}[1]{
+  \left[ #1 \right]
+}
+
+% Define shortcut for round brackets
+\newcommand{\rb}[1]{
+  \left( #1 \right)
+}
+
+\newcommand{\scal}[1]{
+    \langle #1 \rangle
+}
+
+% Define shortcut for module brackets
+\newcommand{\vb}[1]{
+  \left| #1 \right|
+}
+
+% Define shortcut for braces
+\newcommand{\bb}[1]{
+  \left\{ #1 \right\}
+}
+
+% Define shortcut for |_{t = 0}
+\newcommand{\val}[2]{
+  \left. #2 \right|_{#1}
+}
+
+
+\newcommand{\loss}[1]{\mathcal{L}_{#1}}
+\newcommand{\mean}[1]{\mathbb{E}_{#1}}
+

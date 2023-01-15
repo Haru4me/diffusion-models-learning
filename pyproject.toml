@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "diffusion-models-learning"
+version = "0.1.0"
+description = ""
+authors = ["Haru4me <durdaev2010@yandex.ru>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "diffusion_models_learning"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+torch = "^1.13.1"
+torchvision = "^0.14.1"
+matplotlib = "^3.6.3"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+notebook = "^6.5.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

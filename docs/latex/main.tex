@@ -1,0 +1,194 @@
+\documentclass[11pt, a4paper, twocolumn, twoside]{article} %ncc		
+%\usepackage[sc]{mathpazo}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{hyphenat}
+%\hyphenation{ма-те-ма-ти-ка вос-ста-нав-ли-вать}
+\usepackage{authblk}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{command}
+\usepackage{amsmath,amsfonts,amsthm,stmaryrd,easybmat,mathrsfs,amssymb}
+\usepackage{multirow}
+%\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{color,colortbl}
+\usepackage{blindtext}
+\usepackage{wrapfig}
+
+\graphicspath{ {./imgs/} }
+
+
+\setlength{\parindent}{3ex}
+
+\usepackage[hmarginratio=1:1,right=15mm,top=15mm, bottom=25mm,columnsep=20pt]{geometry}
+\usepackage[small,labelfont=bf,textfont=it]{caption}
+\usepackage{booktabs}
+\usepackage{lettrine}
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep}
+\usepackage{abstract}
+\renewcommand{\abstractnamefont}{\fontfamily{cmr}\large\bfseries} 
+% Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\itshape} 
+% Set the abstract itself to small italic text
+\usepackage{titlesec} 
+% Allows customization of titles
+\renewcommand\thesection{\Roman{section}} 
+% roman numerals for subsections
+\titleformat{\section}[block]{\fontfamily{cmr}\large\scshape\bfseries}{\thesection.}{0.2em}{} 
+% Change the look of the section titles
+\titleformat{\subsection}[block]{\scshape\fontfamily{cmr}\bfseries}{\thesubsection.}{0.2em}{} 
+% Change the look of the section titles
+\titleformat{\subsubsection}[block]{\scshape\fontfamily{cmr}\bfseries}{\thesubsubsection.}{0.2em}{} 
+% Change the look of the section titles
+\titleformat{\paragraph}[runin]{\fontfamily{cmr}\bfseries}{2em}{}{\hspace{0ex}}
+
+
+%\usepackage{fancyhdr} % Headers and footers		ДЛЯ ПРЕАМБУЛЫ
+%\pagestyle{fancy} % All pages have headers and footers
+%\fancyhead{} % Blank out the default header
+%\fancyfoot{} % Blank out the default footer
+%\fancyhead[C]{Голов~В.~А.~$\bullet$~ИММО-02-20~$\bullet$~\today} 
+% Custom header text
+%\fancyfoot[RO,LE]{\thepage} % Custom footer text
+\usepackage{titling} % Customizing the title section
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+\definecolor{DG}{RGB}{200,200,200}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,      
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\usepackage[margin=0pt,font=small,labelfont={rm,bf},textfont=normalfont]{caption}
+\usepackage[ruled,vlined]{algorithm2e}
+\newtheorem{theor}{Теорема}
+
+
+%================== TRANSLATE ALGORYTHM =========================================================
+\SetKwInput{KwData}{Исходные параметры}
+\SetKwInput{KwResult}{Результат}
+\SetKwInput{KwIn}{Входные данные}
+\SetKwInput{KwOut}{Выходные данные}
+\SetKwIF{If}{ElseIf}{Else}{если}{тогда}{иначе если}{иначе}{конец условия}
+\SetKwFor{While}{до тех пор, пока}{выполнять}{конец цикла}
+\SetKw{KwTo}{от}
+\SetKw{KwRet}{вернуть}
+\SetKw{Return}{вернуть}
+\SetKwBlock{Begin}{начало блока}{конец блока}
+\SetKwSwitch{Switch}{Case}{Other}{Проверить значение}{и выполнить}{вариант}{в противном случае}{конец варианта}{конец проверки значений}
+\SetKwFor{For}{цикл}{выполнять}{конец цикла}
+\SetKwFor{ForEach}{для каждого}{выполнять}{конец цикла}
+\SetKwRepeat{Repeat}{повторять}{до тех пор, пока}
+\SetAlgorithmName{Алгоритм}{алгоритм}{Список алгоритмов}
+ 
+
+%================== TITLE SECTION =========================================================
+
+%\setlength{\droptitle}{-7\baselineskip} % Move the title up
+\pretitle{\begin{center}\fontfamily{cmr}\LARGE\bfseries} % Article title formatting
+\posttitle{\end{center}}
+
+\title{Stable-Diffusion models}
+
+\author{Голов~В.~А.}
+\affil{Конспекты по пройденному материалу}
+\date{\today}
+
+
+
+\newtheorem{hypothesis}{Гипотеза}[section]
+\newtheorem{defin}{Определение}[section]
+\newcommand{\fusion}[2]{#1\diamond #2}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Диффузиозная модель}
+
+\subsection{Что такое диффузионная модель?}
+
+Положим существует $q(x_0)$ – распределение исходных данных.То есть распределение в котором выборка $x_0 \sim q(x_0)$. \textbf{Прямой диффузиозный процесс} $q(x_t | x_{t-1})$ зашумляет данные Гауссовым шумом на каждом шаге $t$. 
+\begin{equation}
+	q(x_t|x_{t-1}) = \mathcal{N}(x_t; \sqrt{1-\beta_t}x_{t-1}, \beta_t I),
+\end{equation}
+где $\forall t,~ 0 < \beta_t < 1$ и $\beta_t > \beta_{t-1}$. В классической нотации нормальное распределение $\mathcal{N}(\mu, \sigma^2)$ или в общем виде $\mathcal{N}(\vec{\mu}, \Sigma)$ зависит от параметров смещения $\mu$ и разброса $\sigma$ (среднее и стандартное отклонение). В данном случае $\mu_t = \sqrt{1-\beta_t}x_{t-1}$ и $\sigma_t^2 = \beta_t$. Преобразование зашумления можно определить при помощи добавления аддитивного шума $\eps\sim\mathcal{N}(0, I)$ как 
+\begin{equation}
+	x_t = \mu_t + \sigma_t\cdot\eps = \sqrt{1-\beta_t}x_{t-1} + \sqrt{\beta_t}\eps.
+\end{equation}
+Это следует из того факта, что если $\xi\sim\mathcal{N}(0,1)$, то $\eta = \sigma\xi + \mu\sim\mathcal{N}(\mu, \sigma^2)$. Заметим, что каждое $\beta_t$ не является постоянной от времени и называется \textbf{запланированным разбросом} и может задаваться по-разному (линейно, квадратически, синусом и тд.).
+
+Таким образом, если бы мы знали условное распределение $p(x_{t-1}| x_t)$, мы бы могли запустить процесс в обратном порядке и получить $x_0$ выборку из зашумленной $x_T$, где $t = 0,\cdots,T$. 
+
+Так как $p(x_{t-1}| x_t)$ мы не знаем, приблизим его при помощи параметризованной функции распределения $p_{\theta}(x_{t-1} | x_t)$, где $\theta$ – веса, обновляемые в процессе обучения. Так как нормальное распределение зависит от двух параметров, введем параметризованные среднее и разброс ($\mu_{\theta}$ и $\Sigma_{\theta}$). Тогда наше параметризованное распределение имеет вид
+\begin{equation}
+	p_{\theta}(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_{\theta}(x_t,t), \Sigma_{\theta}(x_t, t)).
+\end{equation}
+Заметим, что авторы статьи \cite{Ho2020} обучают модель только на среднем, а разброс фиксируют как $\Sigma_{\theta} = \sigma^2 I = \beta_t I$, что было улучшено в статье \cite{Nichol2021a}.
+
+\subsection{Определение процесса обучения}
+
+Если рассматривать $q$ и $p_{\theta}$ как VAE, то можно воспользоваться \textit{variational lower bound} (ELBO) для минимизации правдоподобия. В данном случае ELBO преобразуется в сумму $L = L_0 + L_1 + \cdots + L_T$, где все $L_t$ кроме $L_0$ имеют вид MSE ($L_2$ нормы).
+
+Заметим, что для получения $x_t$ из $x_0$ не нужно проделывать все шаги между ними. При известных $\beta_t$ достаточно выполнить преобразование 
+\begin{equation}
+	q(x_t | x_0) = \mathcal{N}(x_t; \sqrt{\overline\alpha_t}x_0, (1-\overline\alpha_t)I),
+\end{equation}
+где $\alpha_t = 1 - \beta_t$ и $\overline\alpha_t = \prod_{s=1}^t \alpha_s$. Это хорошо, так как позволяет нам оптимизировать случайные члены функции потерь $L$ (случайным образом семплировать выборку по $t$). Помимо этого, данное свойство позволяет нам использовать \textbf{аппроксимацию аддитивного шума} вместо аппроксимации среднего. То есть наше среднее принимает вид
+\begin{equation}
+	\mu_{\theta}(x_t, t) = \dfrac{1}{\sqrt{\alpha_t}}\rb{x_t - \dfrac{\beta_t}{\sqrt{1 - \overline\alpha_t}}\eps_\theta(x_t, t)},
+\end{equation}
+что позволяет ввести функцию потерь $L_t$ вида
+\begin{multline}
+	L_t = \norm{\eps - \eps_\theta(x_t, t)}_2^2 = \\ = \norm{\eps - \eps_\theta(\sqrt{\overline\alpha_t}x_0 + \eps\sqrt{1-\overline\alpha_t}, t)}_2^2.
+\end{multline}
+
+Таким образом алгоритм обучения можно свести к виду Алгоритма \ref{alg:two}.
+\SetKwComment{Comment}{/* }{ */}
+\begin{algorithm}
+\caption{Обучение модели}\label{alg:two}
+\Repeat{не покрыто}{
+	$x_0 \sim q(x_0)$\;
+	$t\sim\mathcal{U}[1, T]$\;
+	$\eps\sim\mathcal{N}(0, I)$\;
+	$\theta \leftarrow \theta - \tau\norm{\eps - \eps_\theta(\sqrt{\overline\alpha_t}x_0 + \eps\sqrt{1-\overline\alpha_t}, t)}_2^2$ \Comment{Градиентный спуск}
+}
+\end{algorithm}
+
+Другими словами, речь идет о следующем
+\begin{enumerate}
+  \item Сэмплируем выборку $x_0$ из реального распределения $q(x_0)$;
+  \item Сэмплируем уровень шума из дискретного равномерного распределения $\mathcal{U}[1, T]$;
+  \item Генерируем шум из нормального распределения и зашумляем данные (как показано выше);
+  \item На основе зашумленных изображений обучаем сеть определять уровень аддитивного шума.
+\end{enumerate}
+
+Далее рассмотрим другие алгоритмы, необходимые при обучении.
+\SetKwComment{Comment}{/* }{ */}
+\begin{algorithm}
+\caption{Сэмплирование}\label{alg:tree}
+$x_T\sim\mathcal{N}(0, I)$\;
+\For{$t=T,\cdots,1$}{
+	\eIf{$t > 1$}{$z\sim\mathcal{N}(0,I)$ \;}{$z = \vec{0}$\;}
+	$x_{t-1} = \frac{1}{\sqrt{\alpha_t}}\rb{x_t - \frac{1-\alpha_t}{\sqrt{1 - \overline\alpha_t}}\eps_\theta(x_t, t)} + z\sigma_t$\;
+}
+\Return $x_0$
+\end{algorithm}
+
+
+
+
+\newpage
+\bibliographystyle{abbrvurl}
+\bibliography{refs.bib}
+
+
+\end{document}
