@@ -1,0 +1,5 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{\numberline {I}Диффузиозная модель}{1}{section.1}%
+\contentsline {subsection}{\numberline {I.1}Что такое диффузионная модель?}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {I.2}Определение процесса обучения}{1}{subsection.1.2}%
+\contentsline {subsection}{\numberline {I.3}Наблюдения и некоторые выводы}{2}{subsection.1.3}%

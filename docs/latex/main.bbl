@@ -1,0 +1,16 @@
+\begin{thebibliography}{1}
+
+\bibitem{Ho2020}
+J.~Ho, A.~Jain, and P.~Abbeel.
+\newblock Denoising diffusion probabilistic models.
+\newblock June 2020.
+\newblock \href {http://arxiv.org/abs/2006.11239} {\path{arXiv:2006.11239}}.
+
+\bibitem{Nichol2021a}
+A.~Nichol and P.~Dhariwal.
+\newblock Improved denoising diffusion probabilistic models.
+\newblock {\em CoRR}, abs/2102.09672, 2021.
+\newblock URL: \url{https://arxiv.org/abs/2102.09672}, \href
+  {http://arxiv.org/abs/2102.09672} {\path{arXiv:2102.09672}}.
+
+\end{thebibliography}
