@@ -29,7 +29,7 @@ def create_train_state(module, rng, learning_rate):
     return TrainState.create(apply_fn=module.apply, params=params, tx=tx, metrics=Metrics.empty())
 
 
-# @partial(jax.jit, static_argnums=(0,))
+@jax.jit # @partial(jax.jit, static_argnums=(0,))
 def train_step(state, sample, steps, noise):
     def loss_fn(params):
         predicted_noise = state.apply_fn({'params': params}, noised_sample, steps)
@@ -42,7 +42,7 @@ def train_step(state, sample, steps, noise):
     return state
 
 
-# @jax.jit
+@jax.jit
 def validate(state, sample, steps, noise):
     noised_sample = noised_data(sample, steps, noise)
     predicted_noise = state.apply_fn({'params': state.params}, noised_sample, steps)
@@ -52,7 +52,7 @@ def validate(state, sample, steps, noise):
     state = state.replace(metrics=metrics)
     return state
 
-
+@partial(jax.jit, static_argnums=(2,))
 def sampling(state, noised_sample, max_steps: int = 100):
     steps = jnp.arange(1, max_steps+1).astype('int32').reshape(-1, 1)
     steps = jnp.repeat(steps, noised_sample.shape[0], axis=1)
@@ -90,13 +90,13 @@ def experiment(model: nn.Module, data: jnp.array, num_epoches: int = 5, batch_si
             state = validate(state, real_data, steps, noise)
 
             if i % 1000:
-                val_noise = sample_noise(real_data, max_steps, rng)[:20]
+                val_noise = sample_noise(real_data, max_steps, rng)
                 generated = sampling(state, val_noise, max_steps)
                 plot_samples(generated, n_cols=8, path='./')
                 logger.info(f"Loss: %.4f" % float(state.metrics.compute().get('loss')))
         loss_history.append(float(state.metrics.compute().get('loss')))
 
-    val_noise = sample_noise(real_data, max_steps, rng)[:20]
+    val_noise = sample_noise(real_data, max_steps, rng)
     generated = sampling(state, val_noise, max_steps)
 
     return state, loss_history, generated

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import jax
 import jax.numpy as jnp
 from pathlib import Path
+from functools import partial
 
 
 def preproc_data(data: np.ndarray) -> np.ndarray:
@@ -14,14 +15,17 @@ def preproc_data(data: np.ndarray) -> np.ndarray:
     return jax.image.resize(data, shape=(data.shape[0], 14, 14), method="bicubic", )
 
 
-def sampling_real(data: np.ndarray, batch_size: int = 32, shuffle: bool = True) -> jnp.array:
-    indexes = np.arange(data.shape[0]).astype(int)
+@partial(jax.jit, static_argnums=(1, 2, 3))
+def sampling_real(data: np.ndarray, batch_size: int = 32, shuffle: bool = True, rng = None) -> jnp.array:
+    if rng == None:
+        seed = random.randrange(sys.maxsize)
+        rng = jax.random.PRNGKey(seed)
+    indexes = jnp.arange(data.shape[0]).astype(int)
     if shuffle:
-        indexes = np.random.permutation(indexes)
+        indexes = jax.random.permutation(rng, indexes)
     num_batches = data.shape[0] // batch_size
-    batches_indexes = indexes[:num_batches * batch_size].reshape(num_batches, batch_size)
-    for batch_indexes in batches_indexes:
-        yield jnp.array(data[batch_indexes, :, :])
+    batches_indexes = jnp.reshape(indexes[:num_batches * batch_size], (num_batches, batch_size))
+    return data[batches_indexes]
 
 
 @jax.jit
@@ -41,6 +45,7 @@ def sample_noise(data: jnp.array, batch_size: int = 32, rng = None) -> jnp.array
     return jax.random.normal(rng, shape=data.shape)
 
 
+@partial(jax.jit, static_argnums=(0,))
 def linear_beta_schedule(max_steps: int = 100):
     beta_start = 0.0001
     beta_end = 0.02
