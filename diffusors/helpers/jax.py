@@ -15,7 +15,7 @@ def preproc_data(data: np.ndarray) -> np.ndarray:
     return jax.image.resize(data, shape=(data.shape[0], 14, 14), method="bicubic", )
 
 
-@partial(jax.jit, static_argnums=(1, 2, 3))
+# @partial(jax.jit, static_argnums=(1, 2, 3))
 def sampling_real(data: np.ndarray, batch_size: int = 32, shuffle: bool = True, rng = None) -> jnp.array:
     if rng == None:
         seed = random.randrange(sys.maxsize)
@@ -45,8 +45,7 @@ def sample_noise(data: jnp.array, batch_size: int = 32, rng = None) -> jnp.array
     return jax.random.normal(rng, shape=data.shape)
 
 
-@partial(jax.jit, static_argnums=(0,))
-def linear_beta_schedule(max_steps: int = 100):
+def linear_beta_schedule(max_steps: int):
     beta_start = 0.0001
     beta_end = 0.02
     return jnp.linspace(beta_start, beta_end, max_steps)
@@ -59,10 +58,9 @@ def alphas_cum_prod(betas, steps):
     return alphas_cum_prod[steps]
 
 
-@jax.jit
-def noised_data(data: jnp.array, steps: jnp.array, noise: jnp.array) -> jnp.array:
+def noised_data(data: jnp.array, steps: jnp.array, noise: jnp.array, max_steps: int) -> jnp.array:
 
-    betas = linear_beta_schedule()
+    betas = linear_beta_schedule(max_steps)
     alphas = alphas_cum_prod(betas, steps)
     alpha = alphas[:, None, None]
 

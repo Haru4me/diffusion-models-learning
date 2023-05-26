@@ -30,12 +30,11 @@ def create_train_state(module, rng, learning_rate):
 
 
 @jax.jit # @partial(jax.jit, static_argnums=(0,))
-def train_step(state, sample, steps, noise):
+def train_step(state, noised_sample, steps, noise):
     def loss_fn(params):
         predicted_noise = state.apply_fn({'params': params}, noised_sample, steps)
         loss = optax.l2_loss(predictions=predicted_noise, targets=noise).mean()
         return loss
-    noised_sample = noised_data(sample, steps, noise)
     grad_fn = jax.grad(loss_fn)
     grads = grad_fn(state.params)
     state = state.apply_gradients(grads=grads)
@@ -43,8 +42,7 @@ def train_step(state, sample, steps, noise):
 
 
 @jax.jit
-def validate(state, sample, steps, noise):
-    noised_sample = noised_data(sample, steps, noise)
+def validate(state, noised_sample, steps, noise):
     predicted_noise = state.apply_fn({'params': state.params}, noised_sample, steps)
     loss = optax.l2_loss(predictions=predicted_noise, targets=noise).mean()
     metric_updates = state.metrics.single_from_model_output(loss=loss)
@@ -52,8 +50,8 @@ def validate(state, sample, steps, noise):
     state = state.replace(metrics=metrics)
     return state
 
-@partial(jax.jit, static_argnums=(2,))
-def sampling(state, noised_sample, max_steps: int = 100):
+
+def sampling(state, noised_sample, max_steps):
     steps = jnp.arange(1, max_steps+1).astype('int32').reshape(-1, 1)
     steps = jnp.repeat(steps, noised_sample.shape[0], axis=1)
     betas = linear_beta_schedule(max_steps)
@@ -86,8 +84,9 @@ def experiment(model: nn.Module, data: jnp.array, num_epoches: int = 5, batch_si
             steps = sample_steps(real_data, max_steps, rng)[:, None]
             noise = sample_noise(real_data, max_steps, rng)[:, :, :, None]
             real_data = real_data[:, :, :, None]
-            state = train_step(state, real_data, steps, noise)
-            state = validate(state, real_data, steps, noise)
+            noised_sample = noised_data(real_data, steps, noise, max_steps)
+            state = train_step(state, noised_sample, steps, noise)
+            state = validate(state, noised_sample, steps, noise)
 
             if i % 1000:
                 val_noise = sample_noise(real_data, max_steps, rng)
